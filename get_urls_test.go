@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/url"
 	"reflect"
 	"testing"
 )
@@ -86,13 +87,15 @@ func Test_getURLsFromHTML(t *testing.T) {
 				rawBaseURL: "://invalidURL",
 			},
 			want:    nil,
-			wantErr: true,
+			wantErr: false,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := getURLsFromHTML(tt.args.htmlBody, tt.args.rawBaseURL)
+			baseURL, _ := url.Parse(tt.args.rawBaseURL)
+
+			got, err := getURLsFromHTML(tt.args.htmlBody, baseURL)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("getURLsFromHTML() error = %v, wantErr %v", err, tt.wantErr)
 				return
