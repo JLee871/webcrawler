@@ -16,5 +16,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Printf("starting crawl of: %v\n", args[0])
+	rawURL := args[0]
+	fmt.Printf("starting crawl of: %v\n", rawURL)
+
+	pages := make(map[string]int)
+	crawlPage(rawURL, rawURL, pages)
+
+	for key, value := range pages {
+		fmt.Printf("%v: %v\n", key, value)
+	}
 }
