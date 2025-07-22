@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
 )
 
 func main() {
@@ -11,15 +12,34 @@ func main() {
 		fmt.Println("no website provided")
 		os.Exit(1)
 	}
-	if len(args) > 1 {
+	if len(args) > 3 {
 		fmt.Println("too many arguments provided")
 		os.Exit(1)
 	}
 
 	rawURL := args[0]
 
-	const maxConcurrency = 3
-	cfg, err := configure(rawURL, maxConcurrency)
+	const defaultMaxConcurrency = 3
+	const defaultMaxPages = 100
+
+	maxConcurrency := defaultMaxConcurrency
+	maxPages := defaultMaxPages
+	if len(args) > 1 {
+		num, err := strconv.Atoi(args[1])
+		if err != nil {
+			fmt.Println("bad arg. usage: <base_url> [max_concurrency {3}] [max_pages {100}]")
+		}
+		maxConcurrency = num
+	}
+	if len(args) > 2 {
+		num, err := strconv.Atoi(args[2])
+		if err != nil {
+			fmt.Println("bad arg. usage: <base_url> [max_concurrency {3}] [max_pages {100}]")
+		}
+		maxPages = num
+	}
+
+	cfg, err := configure(rawURL, maxConcurrency, maxPages)
 	if err != nil {
 		fmt.Printf("error configuring: %v", err)
 		os.Exit(1)

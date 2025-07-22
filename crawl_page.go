@@ -12,6 +12,10 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
 		cfg.wg.Done()
 	}()
 
+	if cfg.isMaxPages() {
+		return
+	}
+
 	current, err := url.Parse(rawCurrentURL)
 	if err != nil {
 		fmt.Printf("error parsing current url: %v\n", err)
@@ -32,6 +36,8 @@ func (cfg *config) crawlPage(rawCurrentURL string) {
 	if !isFirst {
 		return
 	}
+
+	fmt.Printf("crawling page: %v\n", rawCurrentURL)
 
 	html, err := getHTML(rawCurrentURL)
 	if err != nil {
